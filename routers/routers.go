@@ -9,10 +9,11 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 	app.Post("/login", controllers.Login)
-
+	//USER
 	userGroup := app.Group("/home", middlewares.OnlyUser)
 	userGroup.Get("/", controllers.UserTest)
 
+	//ADMIN
 	adminGroup := app.Group("/admin", middlewares.OnlyAdmin)
 	adminGroup.Get("/allusers", controllers.GetAllUser)
 	adminGroup.Post("/createuser", controllers.CreateUser)
