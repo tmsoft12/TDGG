@@ -5,9 +5,16 @@ import (
 	"tm/middlewares"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func SetupRoutes(app *fiber.App) {
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,HEAD,PUT,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
 	app.Post("/login", controllers.Login)
 	//USER
 	userGroup := app.Group("/home", middlewares.OnlyUser)
