@@ -26,6 +26,6 @@ func SetupRoutes(app *fiber.App) {
 	adminGroup.Post("/createuser", controllers.CreateUser)
 	adminGroup.Get("/getuser/:id", controllers.GetUserById)
 	adminGroup.Put("/update/:id", controllers.UpdateUser)
-	adminGroup.Delete("/delete/:id", controllers.DeleteReport)
+	adminGroup.Delete("/delete/:id", controllers.DeleteUser)
 
 }
