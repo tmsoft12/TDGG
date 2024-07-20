@@ -12,16 +12,15 @@ func SetupRoutes(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,HEAD,PUT,DELETE,OPTIONS",
-		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	app.Post("/login", controllers.Login)
+	app.Post("api/login", controllers.Login)
 	//USER
-	userGroup := app.Group("/home", middlewares.OnlyUser)
-	userGroup.Get("/", controllers.UserTest)
-
+	userGroup := app.Group("/api", middlewares.OnlyUser)
+	userGroup.Get("/home", controllers.UserTest)
+ 
 	//ADMIN
-	adminGroup := app.Group("/admin", middlewares.OnlyAdmin)
+	adminGroup := app.Group("api/admin", middlewares.OnlyAdmin)
 	adminGroup.Get("/allusers", controllers.GetAllUser)
 	adminGroup.Post("/createuser", controllers.CreateUser)
 	adminGroup.Get("/getuser/:id", controllers.GetUserById)

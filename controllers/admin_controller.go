@@ -20,7 +20,7 @@ type LoginInput struct {
 }
 
 func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 7)
 	return string(bytes), err
 }
 
@@ -39,7 +39,7 @@ func checkPasswordHash(password, hash string) bool {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
-// @Router /admin/login [post]
+// @Router /api/login [post]
 func Login(c *fiber.Ctx) error {
 	input := new(LoginInput)
 	if err := c.BodyParser(input); err != nil {
@@ -86,7 +86,7 @@ func Login(c *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {array} models.User
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /admin/users [get]
+// @Router /api/admin/allusers [get]
 func GetAllUser(c *fiber.Ctx) error {
 	rows, err := database.DBpool.Query(context.Background(), "SELECT id, username, password, role FROM users")
 	if err != nil {
@@ -120,7 +120,7 @@ func GetAllUser(c *fiber.Ctx) error {
 // @Success 200 {object} models.User
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /admin/users/{id} [get]
+// @Router /api/admin/getuser/{id} [get]
 func GetUserById(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -148,7 +148,7 @@ func GetUserById(c *fiber.Ctx) error {
 // @Success 201 {object} models.User
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /admin/users [post]
+// @Router /api/admin/createuser [post]
 func CreateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
@@ -180,7 +180,7 @@ func CreateUser(c *fiber.Ctx) error {
 // @Failure 400 {string} string "Bad Request"
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /admin/users/{id} [put]
+// @Router /api/admin/update/{id} [put]
 func UpdateUser(c *fiber.Ctx) error {
 	requestBody := new(struct {
 		User struct {
@@ -228,7 +228,7 @@ func UpdateUser(c *fiber.Ctx) error {
 // @Success 200 {string} string "OK"
 // @Failure 404 {string} string "User not found"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /admin/users/{id} [delete]
+// @Router /api/admin/delete/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 

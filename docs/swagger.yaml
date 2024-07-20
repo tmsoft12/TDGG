@@ -25,43 +25,7 @@ info:
   title: Fiber Swagger Example API
   version: "1.0"
 paths:
-  /admin/login:
-    post:
-      consumes:
-      - application/json
-      description: Login by username and password
-      parameters:
-      - description: Login input
-        in: body
-        name: loginInput
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.LoginInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: User login
-      tags:
-      - auth
-  /admin/users:
+  /api/admin/allusers:
     get:
       description: Get details of all users
       produces:
@@ -80,6 +44,7 @@ paths:
       summary: Get all users
       tags:
       - users
+  /api/admin/createuser:
     post:
       consumes:
       - application/json
@@ -109,7 +74,7 @@ paths:
       summary: Create a new user
       tags:
       - users
-  /admin/users/{id}:
+  /api/admin/delete/{id}:
     delete:
       description: Delete a user by ID
       parameters:
@@ -134,6 +99,7 @@ paths:
       summary: Delete a user
       tags:
       - users
+  /api/admin/getuser/{id}:
     get:
       description: Get details of a user by ID
       parameters:
@@ -160,6 +126,7 @@ paths:
       summary: Get user by ID
       tags:
       - users
+  /api/admin/update/{id}:
     put:
       consumes:
       - application/json
@@ -198,4 +165,40 @@ paths:
       summary: Update an existing user
       tags:
       - users
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login by username and password
+      parameters:
+      - description: Login input
+        in: body
+        name: loginInput
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User login
+      tags:
+      - auth
 swagger: "2.0"
