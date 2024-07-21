@@ -5,20 +5,22 @@ import (
 	"tm/middlewares"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/swagger"
 )
 
 func SetupRoutes(app *fiber.App) {
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,OPTIONS",
-	}))
+	app.Use(middlewares.CORSMiddleware())
+	app.Post("/api/doorlock", controllers.CreateDoorLockData)
+	app.Get("/api/doorlock/:device_id", controllers.GetDoorLockData)
+	app.Put("/api/doorlock/:device_id", controllers.UpdateDoorLockData)
+	app.Delete("/api/doorlock/:device_id", controllers.DeleteDoorLockData)
 
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Post("api/login", controllers.Login)
 	//USER
 	userGroup := app.Group("/api", middlewares.OnlyUser)
 	userGroup.Get("/home", controllers.UserTest)
- 
+
 	//ADMIN
 	adminGroup := app.Group("api/admin", middlewares.OnlyAdmin)
 	adminGroup.Get("/allusers", controllers.GetAllUser)

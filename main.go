@@ -8,8 +8,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-
-	"github.com/gofiber/swagger"
 )
 
 // @title Fiber Swagger Example API
@@ -25,7 +23,8 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	app.Get("/swagger/*", swagger.HandlerDefault) // default
+	// default
 
-	app.Listen(":8000")
+	app.Listen("0.0.0.0:8000")
+
 }
