@@ -29,17 +29,6 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-// Login godoc
-// @Summary User login
-// @Description Login by username and password
-// @Tags auth
-// @Accept json
-// @Produce json
-// @Param loginInput body LoginInput true "Login input"
-// @Success 200 {object} map[string]string
-// @Failure 400 {object} map[string]string
-// @Failure 401 {object} map[string]string
-// @Router /api/login [post]
 func Login(c *fiber.Ctx) error {
 	input := new(LoginInput)
 	if err := c.BodyParser(input); err != nil {
@@ -76,17 +65,9 @@ func Login(c *fiber.Ctx) error {
 		Secure:   false,
 	})
 
-	return c.JSON(fiber.Map{"token": tokenString})
+	return c.JSON(fiber.Map{"token": tokenString, "Rule": user.Role})
 }
 
-// GetAllUser godoc
-// @Summary Get all users
-// @Description Get details of all users
-// @Tags users
-// @Produce json
-// @Success 200 {array} models.User
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /api/admin/allusers [get]
 func GetAllUser(c *fiber.Ctx) error {
 	rows, err := database.DBpool.Query(context.Background(), "SELECT id, username, password, role FROM users")
 	if err != nil {
@@ -111,16 +92,7 @@ func GetAllUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"users": users})
 }
 
-// GetUserById godoc
-// @Summary Get user by ID
-// @Description Get details of a user by ID
-// @Tags users
-// @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {object} models.User
-// @Failure 404 {string} string "User not found"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /api/admin/getuser/{id} [get]
+
 func GetUserById(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -138,23 +110,16 @@ func GetUserById(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"user": user})
 }
 
-// CreateUser godoc
-// @Summary Create a new user
-// @Description Create a new user with the given details
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param user body models.User true "User input"
-// @Success 201 {object} models.User
-// @Failure 400 {string} string "Bad Request"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /api/admin/createuser [post]
+
 func CreateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(400).SendString(err.Error())
 	}
 
+	if user.Username == "" || user.Password == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Username and password cannot be empty"})
+	}
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
 		return c.Status(500).SendString("Error hashing password")
@@ -168,19 +133,7 @@ func CreateUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(user)
 }
 
-// UpdateUser godoc
-// @Summary Update an existing user
-// @Description Update details of an existing user by ID
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Param user body models.User true "User input"
-// @Success 200 {string} string "OK"
-// @Failure 400 {string} string "Bad Request"
-// @Failure 404 {string} string "User not found"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /api/admin/update/{id} [put]
+
 func UpdateUser(c *fiber.Ctx) error {
 	requestBody := new(struct {
 		User struct {
@@ -220,15 +173,6 @@ func UpdateUser(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-// DeleteUser godoc
-// @Summary Delete a user
-// @Description Delete a user by ID
-// @Tags users
-// @Param id path string true "User ID"
-// @Success 200 {string} string "OK"
-// @Failure 404 {string} string "User not found"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /api/admin/delete/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
