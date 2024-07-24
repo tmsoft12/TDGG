@@ -5,13 +5,11 @@ import (
 	"tm/middlewares"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/swagger"
 )
 
 func SetupRoutes(app *fiber.App) {
 	app.Use(middlewares.CORSMiddleware())
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Post("api/login", controllers.Login)
 
 	//USER////////////////////////////////////////////////////////////////////
