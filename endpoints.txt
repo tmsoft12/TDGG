@@ -1,13 +1,99 @@
-http://192.168.100.191:8000/api/login
+http://192.168.100.191:8000/api/login ok   POST
+{
+    "username":"tacmyrat",
+    "password":"salam"
+}
 
 
 
+http://192.168.100.191:8000/api/device/all_device ok GET
+[
+    {
+        "deviceId": "0001",
+        "batteryLevel": 85,
+        "signalStatus": "Good",
+        "isLocked": false
+    },
+    {
+        "deviceId": "0002",
+        "batteryLevel": 15,
+        "signalStatus": "Normal",
+        "isLocked": true
+    }
+]
 
-http://192.168.100.191:8000/api/device/all_device
-http://192.168.100.191:8000/api/device/last_locations
-http://192.168.100.191:8000/api/device/locations
-http://192.168.100.191:8000/api/device/location_list/:id
+http://192.168.100.191:8000/api/device/last_locations  ok  GET
+[
+    {
+        "deviceId": "0001",
+        "location": {
+            "timestamp": 1721763883,
+            "latitude": 37.7749,
+            "longitude": -122.4194
+        },
+        "batteryLevel": 85,
+        "signalStatus": "Good",
+        "isLocked": false
+    },
+    {
+        "deviceId": "0002",
+        "location": {
+            "timestamp": 1721770881,
+            "latitude": 37.7749,
+            "longitude": -122.4194
+        },
+        "batteryLevel": 15,
+        "signalStatus": "Normal",
+        "isLocked": true
+    }
+]
 
+http://192.168.100.191:8000/api/device/locations  ok  POST
+{
+    "device_id": "0001",
+    "latitude": 40.7128,
+    "longitude": -74.0060
+}
+
+
+http://192.168.100.191:8000/api/device/location_list/:id ok  GET
+[
+    {
+        "timestamp": 1721927048,
+        "latitude": 40.7128,
+        "longitude": -74.006
+    },
+    {
+        "timestamp": 1721763883,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    {
+        "timestamp": 1721763840,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    {
+        "timestamp": 1721763544,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    {
+        "timestamp": 1721763524,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    {
+        "timestamp": 1721761942,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    {
+        "timestamp": 1627048800,
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    }
+]
 
 
 
@@ -16,3 +102,4 @@ http://192.168.100.191:8000/api/admin/createuser
 http://192.168.100.191:8000/api/admin/getuser/:id
 http://192.168.100.191:8000/api/admin/update/:id
 http://192.168.100.191:8000/api/admin/delete/:id
+9

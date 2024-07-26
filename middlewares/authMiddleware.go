@@ -24,12 +24,12 @@ func OnlyUser(c *fiber.Ctx) error {
 	})
 
 	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Sen Admin Dal"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "You are not login"})
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
 	if claims["role"] != "user" && claims["role"] != "admin" {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Sen Admin Dal"})
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "You are not login"})
 	}
 
 	return c.Next()
@@ -50,7 +50,7 @@ func OnlyAdmin(c *fiber.Ctx) error {
 
 	claims := token.Claims.(jwt.MapClaims)
 	if claims["role"] != "admin" {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "Sen Admin Dal"})
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"message": "You are not admin"})
 	}
 
 	return c.Next()
