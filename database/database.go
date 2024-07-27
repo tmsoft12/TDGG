@@ -11,7 +11,7 @@ var DBpool *pgxpool.Pool
 
 func InitDB() {
 	var err error
-	databaseUrl := "postgres://postgres:test@localhost:5432/test"
+	databaseUrl := "postgres://tac:test@localhost:5433/gps"
 	DBpool, err = pgxpool.Connect(context.Background(), databaseUrl)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)

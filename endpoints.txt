@@ -1,4 +1,4 @@
-http://192.168.100.191:8000/api/login ok   POST
+http://216.250.13.199:8000/api/login ok   POST
 {
     "username":"tacmyrat",
     "password":"salam"
@@ -6,7 +6,7 @@ http://192.168.100.191:8000/api/login ok   POST
 
 
 
-http://192.168.100.191:8000/api/device/all_device ok GET
+http://216.250.13.199:8000/api/device/all_device ok GET
 [
     {
         "deviceId": "0001",
@@ -22,7 +22,7 @@ http://192.168.100.191:8000/api/device/all_device ok GET
     }
 ]
 
-http://192.168.100.191:8000/api/device/last_locations  ok  GET
+http://216.250.13.199:8000/api/device/last_locations  ok  GET
 [
     {
         "deviceId": "0001",
@@ -48,7 +48,7 @@ http://192.168.100.191:8000/api/device/last_locations  ok  GET
     }
 ]
 
-http://192.168.100.191:8000/api/device/locations  ok  POST
+http://216.250.13.199:8000/api/device/locations  ok  POST
 {
     "device_id": "0001",
     "latitude": 40.7128,
@@ -56,7 +56,7 @@ http://192.168.100.191:8000/api/device/locations  ok  POST
 }
 
 
-http://192.168.100.191:8000/api/device/location_list/:id ok  GET
+http://216.250.13.199:8000/api/device/location_list/:id ok  GET
 [
     {
         "timestamp": 1721927048,
@@ -97,9 +97,8 @@ http://192.168.100.191:8000/api/device/location_list/:id ok  GET
 
 
 
-http://192.168.100.191:8000/api/admin/allusers
-http://192.168.100.191:8000/api/admin/createuser
-http://192.168.100.191:8000/api/admin/getuser/:id
-http://192.168.100.191:8000/api/admin/update/:id
-http://192.168.100.191:8000/api/admin/delete/:id
-9
+http://216.250.13.199:8000/api/admin/allusers
+http://216.250.13.199:8000/api/admin/createuser
+http://216.250.13.199:8000/api/admin/getuser/:id
+http://216.250.13.199:8000/api/admin/update/:id
+http://216.250.13.199:8000/api/admin/delete/:id

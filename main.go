@@ -2,6 +2,7 @@ package main
 
 import (
 	"tm/database"
+	_ "tm/docs"
 	routes "tm/routers"
 
 	"github.com/gofiber/fiber/v2"

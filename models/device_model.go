@@ -27,3 +27,9 @@ type DeviceAll struct {
 	SignalStatus string `json:"signalStatus"`
 	IsLocked     bool   `json:"isLocked"`
 }
+
+type DeviceLocationRequest struct {
+	DeviceId  string  `json:"device_id"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}

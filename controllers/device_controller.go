@@ -10,6 +10,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary Get all devices with their last known location
+// @Description Get all devices with their last known location
+// @Tags Devices
+// @Produce json
+// @Success 200 {array} models.DeviceSchema
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/device/last_locations [get]
 func GetAllDevicesLastLocation(c *fiber.Ctx) error {
 
 	rows, err := database.DBpool.Query(context.Background(), "SELECT device_id, battery_level, signal_status, is_locked FROM devices")
@@ -30,7 +37,6 @@ func GetAllDevicesLastLocation(c *fiber.Ctx) error {
 		var location models.DeviceLocation
 		err = locationRow.Scan(&location.Timestamp, &location.Latitude, &location.Longitude)
 		if err != nil {
-
 			device.Location = models.DeviceLocation{}
 		} else {
 			device.Location = location
@@ -46,13 +52,19 @@ func GetAllDevicesLastLocation(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(devices)
 }
 
+// @Summary Add device location
+// @Description Add a new location entry for a device
+// @Tags Devices
+// @Accept json
+// @Produce json
+// @Param location body models.DeviceLocationRequest true "Device location"
+// @Success 201 {object} map[string]interface{} "Location added successfully"
+// @Failure 400 {object} map[string]interface{} "Bad request"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/device/locations [post]
 func AddDeviceLocation(c *fiber.Ctx) error {
 	// Request gövdesinden JSON verisini alın
-	var requestData struct {
-		DeviceId  string  `json:"device_id"`
-		Latitude  float64 `json:"latitude"`
-		Longitude float64 `json:"longitude"`
-	}
+	var requestData models.DeviceLocationRequest
 
 	if err := c.BodyParser(&requestData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to parse request", "details": err.Error()})
@@ -81,6 +93,14 @@ func AddDeviceLocation(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Location added successfully"})
 }
 
+// @Summary Get device locations
+// @Description Get all locations for a specific device
+// @Tags Devices
+// @Produce json
+// @Param id path string true "Device ID"
+// @Success 200 {array} models.DeviceLocation
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/device/location_list/{id} [get]
 func GetDeviceLocations(c *fiber.Ctx) error {
 	deviceId := c.Params("id")
 
@@ -107,6 +127,13 @@ func GetDeviceLocations(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(locations)
 }
 
+// @Summary Get all devices
+// @Description Get all devices
+// @Tags Devices
+// @Produce json
+// @Success 200 {array} models.DeviceAll
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/device/all_device [get]
 func GetAllDevices(c *fiber.Ctx) error {
 
 	rows, err := database.DBpool.Query(context.Background(), "SELECT device_id, battery_level, signal_status, is_locked FROM devices")

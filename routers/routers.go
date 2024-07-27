@@ -5,11 +5,12 @@ import (
 	"tm/middlewares"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 )
 
 func SetupRoutes(app *fiber.App) {
 	app.Use(middlewares.CORSMiddleware())
-
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Post("api/login", controllers.Login)
 
 	//USER////////////////////////////////////////////////////////////////////
@@ -21,6 +22,11 @@ func SetupRoutes(app *fiber.App) {
 	userGroup.Get("/device/last_locations", controllers.GetAllDevicesLastLocation)
 	userGroup.Post("/device/locations", controllers.AddDeviceLocation)
 	userGroup.Get("/device/location_list/:id", controllers.GetDeviceLocations)
+
+	//DRIVERS/////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	userGroup.Get("/driver/all_driver", controllers.GetAllDrivers)
+	userGroup.Get("/driver/get_driver/:id", controllers.GetDriverById)
 
 	//////////////////////////////////////////////////////////////////////////
 	//ADMIN///////////////////////////////////////////////////////////////////

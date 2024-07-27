@@ -29,6 +29,17 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
+// @Summary Login
+// @Description Login
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param loginInput body LoginInput true "Login Input"
+// @Success 200 {object} map[string]interface{} "token"
+// @Failure 400 {object} map[string]interface{} "Bad request"
+// @Failure 401 {object} map[string]interface{} "Invalid username or password"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/login [post]
 func Login(c *fiber.Ctx) error {
 	input := new(LoginInput)
 	if err := c.BodyParser(input); err != nil {
@@ -68,6 +79,13 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"token": tokenString, "Rule": user.Role})
 }
 
+// @Summary Get All Users
+// @Description Retrieve all users
+// @Tags Admin
+// @Produce json
+// @Success 200 {array} models.User
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/admin/allusers [get]
 func GetAllUser(c *fiber.Ctx) error {
 	rows, err := database.DBpool.Query(context.Background(), "SELECT id, username, password, role FROM users")
 	if err != nil {
@@ -92,7 +110,15 @@ func GetAllUser(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"users": users})
 }
 
-
+// @Summary Get User By ID
+// @Description Retrieve a user by ID
+// @Tags Admin
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.User
+// @Failure 404 {object} map[string]interface{} "User not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/admin/getuser/{id} [get]
 func GetUserById(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -110,7 +136,16 @@ func GetUserById(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"user": user})
 }
 
-
+// @Summary Create User
+// @Description Create a new user
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param user body models.User true "User"
+// @Success 201 {object} models.User
+// @Failure 400 {object} map[string]interface{} "Bad request"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/admin/createuser [post]
 func CreateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
@@ -133,22 +168,25 @@ func CreateUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(user)
 }
 
-
+// @Summary Update User
+// @Description Update an existing user
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body models.User true "User"
+// @Success 200 {object} map[string]interface{} "User updated"
+// @Failure 400 {object} map[string]interface{} "Bad request"
+// @Failure 404 {object} map[string]interface{} "User not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/admin/update/{id} [put]
 func UpdateUser(c *fiber.Ctx) error {
-	requestBody := new(struct {
-		User struct {
-			ID       int    `json:"id"`
-			Username string `json:"username"`
-			Password string `json:"password"`
-			Role     string `json:"role"`
-		} `json:"user"`
-	})
+	id := c.Params("id")
+	user := new(models.User)
 
-	if err := c.BodyParser(requestBody); err != nil {
+	if err := c.BodyParser(user); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid request body: " + err.Error())
 	}
-
-	user := requestBody.User
 
 	if user.Username == "" || user.Password == "" || user.Role == "" {
 		return c.Status(fiber.StatusBadRequest).SendString("Username, password, and role must not be empty")
@@ -161,7 +199,7 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	commandTag, err := database.DBpool.Exec(context.Background(),
 		"UPDATE users SET username=$1, password=$2, role=$3 WHERE id=$4",
-		user.Username, hashedPassword, user.Role, user.ID)
+		user.Username, hashedPassword, user.Role, id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Database error: " + err.Error())
 	}
@@ -173,6 +211,14 @@ func UpdateUser(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
+// @Summary Delete User
+// @Description Delete a user by ID
+// @Tags Admin
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]interface{} "User deleted"
+// @Failure 404 {object} map[string]interface{} "User not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/admin/delete/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
