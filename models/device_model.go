@@ -20,16 +20,23 @@ type DeviceSchema struct {
 	BatteryLevel int            `json:"batteryLevel"`
 	SignalStatus string         `json:"signalStatus"`
 	IsLocked     bool           `json:"isLocked"`
+	Status       string         `json:"status"`
 }
 type DeviceAll struct {
 	DeviceId     string `json:"deviceId"`
 	BatteryLevel int    `json:"batteryLevel"`
 	SignalStatus string `json:"signalStatus"`
 	IsLocked     bool   `json:"isLocked"`
+	Status       string `json:"status"`
 }
 
 type DeviceLocationRequest struct {
 	DeviceId  string  `json:"device_id"`
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
+}
+
+type StatusCount struct {
+	Status string `json:"status"`
+	Count  int    `json:"count"`
 }

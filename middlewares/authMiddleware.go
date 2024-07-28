@@ -14,15 +14,36 @@ func CORSMiddleware() fiber.Handler {
 		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 	})
 }
-func OnlyUser(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
-	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fiber.NewError(fiber.StatusUnauthorized, "unexpected signing method")
-		}
-		return JwtSecret, nil
-	})
 
+func parseToken(c *fiber.Ctx) (*jwt.Token, error) {
+	// Check for token in cookies
+	cookie := c.Cookies("jwt")
+	if cookie != "" {
+		return jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fiber.NewError(fiber.StatusUnauthorized, "unexpected signing method")
+			}
+			return JwtSecret, nil
+		})
+	}
+
+	// Check for token in Authorization header
+	authHeader := c.Get("Authorization")
+	if authHeader != "" && len(authHeader) > 7 && authHeader[:7] == "Bearer " {
+		tokenStr := authHeader[7:]
+		return jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fiber.NewError(fiber.StatusUnauthorized, "unexpected signing method")
+			}
+			return JwtSecret, nil
+		})
+	}
+
+	return nil, fiber.NewError(fiber.StatusUnauthorized, "unauthenticated")
+}
+
+func OnlyUser(c *fiber.Ctx) error {
+	token, err := parseToken(c)
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "You are not login"})
 	}
@@ -36,14 +57,7 @@ func OnlyUser(c *fiber.Ctx) error {
 }
 
 func OnlyAdmin(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
-	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fiber.NewError(fiber.StatusUnauthorized, "unexpected signing method")
-		}
-		return JwtSecret, nil
-	})
-
+	token, err := parseToken(c)
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "unauthenticated"})
 	}

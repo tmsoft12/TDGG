@@ -22,13 +22,16 @@ func SetupRoutes(app *fiber.App) {
 	userGroup.Get("/device/last_locations", controllers.GetAllDevicesLastLocation)
 	userGroup.Post("/device/locations", controllers.AddDeviceLocation)
 	userGroup.Get("/device/location_list/:id", controllers.GetDeviceLocations)
-
 	//DRIVERS/////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	userGroup.Get("/driver/all_driver", controllers.GetAllDrivers)
 	userGroup.Get("/driver/get_driver/:id", controllers.GetDriverById)
-
+	userGroup.Post("/driver/create_driver", controllers.CreateDriver)
+	userGroup.Delete("/driver/delete_driver/:id", controllers.DeleteDriver)
+	userGroup.Put("/driver/update_driver/:id", controllers.UpdateDriver)
 	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	userGroup.Get("/main", controllers.Home_page)
 	//ADMIN///////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	adminGroup := app.Group("api/admin", middlewares.OnlyAdmin)

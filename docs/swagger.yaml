@@ -1,4 +1,20 @@
 definitions:
+  controllers.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.HomePageResponse:
+    properties:
+      Last Locations:
+        items:
+          $ref: '#/definitions/models.DeviceSchema'
+        type: array
+      Status:
+        items:
+          $ref: '#/definitions/models.StatusCount'
+        type: array
+    type: object
   controllers.LoginInput:
     properties:
       password:
@@ -15,6 +31,8 @@ definitions:
       isLocked:
         type: boolean
       signalStatus:
+        type: string
+      status:
         type: string
     type: object
   models.DeviceLocation:
@@ -47,6 +65,8 @@ definitions:
         $ref: '#/definitions/models.DeviceLocation'
       signalStatus:
         type: string
+      status:
+        type: string
     type: object
   models.Driver:
     properties:
@@ -66,6 +86,13 @@ definitions:
         type: string
       weight:
         type: integer
+    type: object
+  models.StatusCount:
+    properties:
+      count:
+        type: integer
+      status:
+        type: string
     type: object
   models.User:
     properties:
@@ -352,6 +379,75 @@ paths:
       summary: Get all drivers
       tags:
       - Drivers
+  /api/driver/create_driver:
+    post:
+      consumes:
+      - application/json
+      description: Create a new driver
+      parameters:
+      - description: Driver
+        in: body
+        name: driver
+        required: true
+        schema:
+          $ref: '#/definitions/models.Driver'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Driver'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Driver
+      tags:
+      - Drivers
+  /api/driver/delete_driver/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a driver by ID
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Driver
+      tags:
+      - Drivers
   /api/driver/get_driver/{id}:
     get:
       description: Retrieve a driver by ID
@@ -379,6 +475,48 @@ paths:
             additionalProperties: true
             type: object
       summary: Get Driver By ID
+      tags:
+      - Drivers
+  /api/driver/update_driver/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a driver's details by ID
+      parameters:
+      - description: Driver ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Driver
+        in: body
+        name: driver
+        required: true
+        schema:
+          $ref: '#/definitions/models.Driver'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Driver'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Driver
       tags:
       - Drivers
   /api/login:
@@ -419,4 +557,24 @@ paths:
       summary: Login
       tags:
       - User
+  /api/main:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the count of devices grouped by their status and the
+        latest location of each device
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.HomePageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get device status counts and latest locations
+      tags:
+      - devices
 swagger: "2.0"
