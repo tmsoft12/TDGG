@@ -1,6 +1,7 @@
 package main
 
 import (
+	"tm/controllers"
 	"tm/database"
 	_ "tm/docs"
 	routes "tm/routers"
@@ -16,7 +17,7 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	// default
+	go controllers.ListenForUpdates()
 
 	app.Listen("0.0.0.0:8000")
 
